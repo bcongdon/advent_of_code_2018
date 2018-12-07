@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+
 def part1(dependencies):
     dep_graph = defaultdict(set)
     for dep in dependencies:
@@ -19,7 +20,8 @@ def part1(dependencies):
         for k in dep_graph:
             dep_graph[k] -= set(executing)
         order.extend(executing)
-    return ''.join(order)
+    return "".join(order)
+
 
 def part2(dependencies):
     dep_graph = defaultdict(set)
@@ -50,7 +52,7 @@ def part2(dependencies):
             if w != 0 or not can_be_executed:
                 continue
             executing = can_be_executed.pop()
-            worker_cooldowns[idx] = 60 + ord(executing) - ord('A') + 1
+            worker_cooldowns[idx] = 60 + ord(executing) - ord("A") + 1
             worker_keys[idx] = executing
 
             del dep_graph[executing]
@@ -61,11 +63,12 @@ def part2(dependencies):
 
     return time
 
-if __name__ == '__main__':
-    with open('7.txt') as f:
+
+if __name__ == "__main__":
+    with open("7.txt") as f:
         raw = f.readlines()
 
-    dependencies = [(w[1], w[-3]) for w in [line.split(' ') for line in raw]]
+    dependencies = [(w[1], w[-3]) for w in [line.split(" ") for line in raw]]
 
-    print('Part 1: {}'.format(part1(dependencies)))
-    print('Part 2: {}'.format(part2(dependencies)))
+    print("Part 1: {}".format(part1(dependencies)))
+    print("Part 2: {}".format(part2(dependencies)))
