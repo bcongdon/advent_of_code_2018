@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+
 def parse_rules(lines):
     rules = {}
     for l in lines:
@@ -7,8 +8,9 @@ def parse_rules(lines):
         rules[parts[0]] = parts[-1]
     return rules
 
+
 def part1(initial_state, rules, generations=20):
-    state = defaultdict(lambda: '.')
+    state = defaultdict(lambda: ".")
     for idx, val in enumerate(initial_state):
         state[idx] = val
 
@@ -16,18 +18,19 @@ def part1(initial_state, rules, generations=20):
     diffs = []
     for _ in range(generations):
         prev_state = state.copy()
-        state = defaultdict(lambda: '.')
+        state = defaultdict(lambda: ".")
         start = min(prev_state.keys()) - 5
         end = max(prev_state.keys()) + 5
         for start_idx in range(start, end + 1):
-           chunk = ''.join([prev_state[i] for i in range(start_idx, start_idx + 5)]) 
-           state[start_idx + 2] = rules.get(chunk, '.')
-        curr_sum = sum(key for key, val in state.items() if val == '#')
+            chunk = "".join([prev_state[i] for i in range(start_idx, start_idx + 5)])
+            state[start_idx + 2] = rules.get(chunk, ".")
+        curr_sum = sum(key for key, val in state.items() if val == "#")
         diffs.append(curr_sum - prev_sum)
         prev_sum = curr_sum
-    
+
     avg_diff = sum(diffs[-100:]) // 100
-    return sum(key for key, val in state.items() if val == '#'), avg_diff
+    return sum(key for key, val in state.items() if val == "#"), avg_diff
+
 
 def part2(initial_state, rules):
     iters = 1000
@@ -35,8 +38,8 @@ def part2(initial_state, rules):
     return (50000000000 - iters) * diff + curr_sum
 
 
-if __name__ == '__main__':
-    with open('12.txt') as f:
+if __name__ == "__main__":
+    with open("12.txt") as f:
         raw = f.readlines()
 
     initial_state = raw[0].split()[-1]

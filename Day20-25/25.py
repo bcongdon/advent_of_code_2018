@@ -19,6 +19,7 @@ def part1(points):
     for p_idx, point in enumerate(points):
         if p_idx in chosen:
             continue
+
         constellations += 1
         frontier = [p_idx]
         while frontier:
@@ -31,9 +32,9 @@ def part1(points):
 
 
 if __name__ == "__main__":
-    with open('25.txt') as f:
-        points = f.read().strip().split('\n')
+    with open("25.txt") as f:
+        points = f.read().strip().split("\n")
 
-    points = [tuple(int(c) for c in p.split(',')) for p in points]
+    points = [tuple(int(c) for c in p.split(",")) for p in points]
 
     print("Part 1: {}".format(part1(points)))

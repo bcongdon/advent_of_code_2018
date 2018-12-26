@@ -20,6 +20,6 @@ def simulate_game(players, marbles):
     return max(scores)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("Part 1: {}".format(simulate_game(NUM_ELVES, NUM_MARBLES)))
     print("Part 2: {}".format(simulate_game(NUM_ELVES, NUM_MARBLES * 100)))

@@ -2,12 +2,7 @@
 
 from collections import defaultdict
 
-directions = {
-    'N': (1, 0),
-    'S': (-1, 0),
-    'E': (0, 1),
-    'W': (0, -1)
-}
+directions = {"N": (1, 0), "S": (-1, 0), "E": (0, 1), "W": (0, -1)}
 
 
 def maximum_doors(regex):
@@ -17,11 +12,11 @@ def maximum_doors(regex):
     edges = defaultdict(set)
     distances = defaultdict(int)
     for char in regex:
-        if char == '(':
+        if char == "(":
             locations.append((x, y))
-        elif char == ')':
+        elif char == ")":
             x, y = locations.pop()
-        elif char == '|':
+        elif char == "|":
             x, y = locations[-1]
         else:
             dx, dy = directions[char]
@@ -29,15 +24,16 @@ def maximum_doors(regex):
             x, y = x + dx, y + dy
             edges[(x, y)].add((prev_x, prev_y))
             if (x, y) in distances:
-                distances[(x, y)] = min(distances[(x, y)],
-                                        distances[(prev_x, prev_y)] + 1)
+                distances[(x, y)] = min(
+                    distances[(x, y)], distances[(prev_x, prev_y)] + 1
+                )
             else:
                 distances[(x, y)] = distances[(prev_x, prev_y)] + 1
     return max(distances.values()), sum(1 for v in distances.values() if v >= 1000)
 
 
-if __name__ == '__main__':
-    with open('20.txt') as f:
+if __name__ == "__main__":
+    with open("20.txt") as f:
         regex = f.read().strip()
 
     regex = regex[1:-1]  # remove ^ and &

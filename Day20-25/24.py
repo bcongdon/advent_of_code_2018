@@ -2,12 +2,24 @@ import re
 from recordtype import recordtype
 from copy import deepcopy
 
-Group = recordtype('Group', ['team', 'units', 'hp', 'immunities',
-                             'weaknesses', 'damage', 'damage_type', 'initiative', 'id'])
+Group = recordtype(
+    "Group",
+    [
+        "team",
+        "units",
+        "hp",
+        "immunities",
+        "weaknesses",
+        "damage",
+        "damage_type",
+        "initiative",
+        "id",
+    ],
+)
 
-weakness_re = re.compile(r'weak to (.*?)(;|\))')
-immunity_re = re.compile(r'immune to (.*?)(;|\))')
-damage_re = re.compile(r'does (\d+) (\w+) damage')
+weakness_re = re.compile(r"weak to (.*?)(;|\))")
+immunity_re = re.compile(r"immune to (.*?)(;|\))")
+damage_re = re.compile(r"does (\d+) (\w+) damage")
 
 
 def parse_group(team, group, _id):
@@ -17,20 +29,22 @@ def parse_group(team, group, _id):
     hp = int(words[4])
 
     immunities, weaknesses = [], []
-    if 'immune to' in group:
+    if "immune to" in group:
         matches = immunity_re.search(group)
-        immunities = matches.group(1).replace(' ', '').split(',')
+        immunities = matches.group(1).replace(" ", "").split(",")
 
-    if 'weak to' in group:
+    if "weak to" in group:
         matches = weakness_re.search(group)
-        weaknesses = matches.group(1).replace(' ', '').split(',')
+        weaknesses = matches.group(1).replace(" ", "").split(",")
 
     matches = damage_re.search(group)
     damage = int(matches.group(1))
     damage_type = matches.group(2).strip()
     initiative = int(words[-1])
 
-    return Group(team, units, hp, immunities, weaknesses, damage, damage_type, initiative, _id)
+    return Group(
+        team, units, hp, immunities, weaknesses, damage, damage_type, initiative, _id
+    )
 
 
 def damage_possible(group1, group2):
@@ -49,22 +63,33 @@ def hash_group(group):
 
 def simulate(groups, boost=0):
     for group in groups:
-        if group.team == 'immunity':
+        if group.team == "immunity":
             group.damage += boost
 
     while len(set(g.team for g in groups)) == 2:
-        groups.sort(key=lambda g: (
-            (g.units * g.damage), g.initiative), reverse=True)
+        groups.sort(key=lambda g: ((g.units * g.damage), g.initiative), reverse=True)
 
         pairings = []
         selected = set()
         for attacker in groups:
-            targets = [g for g in groups if hash_group(
-                g) not in selected and g.team != attacker.team and damage_possible(attacker, g) > 0]
+            targets = [
+                g
+                for g in groups
+                if hash_group(g) not in selected
+                and g.team != attacker.team
+                and damage_possible(attacker, g) > 0
+            ]
             if not targets:
                 continue
-            target = sorted(targets, key=lambda g: (-damage_possible(
-                attacker, g), -(g.units * g.damage), -g.initiative))[0]
+
+            target = sorted(
+                targets,
+                key=lambda g: (
+                    -damage_possible(attacker, g),
+                    -(g.units * g.damage),
+                    -g.initiative,
+                ),
+            )[0]
             # targets.remove(target)
             selected.add(hash_group(target))
             pairings.append((attacker, target))
@@ -85,16 +110,18 @@ def simulate(groups, boost=0):
     return sum(g.units for g in groups), groups[0].team
 
 
-if __name__ == '__main__':
-    with open('24.txt') as f:
-        immune, infection = f.read().strip().split('\n\n')
+if __name__ == "__main__":
+    with open("24.txt") as f:
+        immune, infection = f.read().strip().split("\n\n")
 
-    immune, infection = immune.split('\n')[1:], infection.split('\n')[1:]
+    immune, infection = immune.split("\n")[1:], infection.split("\n")[1:]
 
-    immune = [parse_group('immunity', group, idx + 1)
-              for idx, group in enumerate(immune)]
-    infection = [parse_group('infection', group, idx + 1)
-                 for idx, group in enumerate(infection)]
+    immune = [
+        parse_group("immunity", group, idx + 1) for idx, group in enumerate(immune)
+    ]
+    infection = [
+        parse_group("infection", group, idx + 1) for idx, group in enumerate(infection)
+    ]
 
     part1, _ = simulate(deepcopy(immune + infection))
     print("Part 1: {}".format(part1))
@@ -104,8 +131,9 @@ if __name__ == '__main__':
         boost += 1
         try:
             part2, team = simulate(deepcopy(immune + infection), boost)
-            if team == 'immunity':
+            if team == "immunity":
                 print("Part 2: {}".format(part2))
                 break
+
         except Exception:
             pass
